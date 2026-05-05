@@ -5,7 +5,6 @@ import argparse
 import re
 
 def get_pkg_count():
-    # Detect package manager - Priority order
     managers = [
         ('rpm', 'rpm -qa | wc -l'),
         ('pacman', 'pacman -Q | wc -l'),
@@ -50,6 +49,8 @@ cyan    = "\033[38;2;125;207;255m"
 green   = "\033[38;2;158;206;106m"
 magenta = "\033[38;2;255;117;127m"
 yellow  = "\033[38;2;224;175;104m"
+orange  = "\033[38;2;255;158;100m"
+red     = "\033[38;2;247;118;142m"
 reset   = "\033[0m"
 
 if platform.system() != "Linux":
@@ -99,7 +100,7 @@ fedora_logo = f""" {blue}
 {reset}
  """
 
-debian_logo = f"""{magenta}
+debian_logo = f"""{red}
        _____
       /  __ \\
      |  /    |
@@ -107,7 +108,7 @@ debian_logo = f"""{magenta}
       \\_
 {reset}"""
 
-ubuntu_logo = f"""{yellow}
+ubuntu_logo = f"""{orange}
          _ 
      ---(_)---
     /  /   \\  \\
