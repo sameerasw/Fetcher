@@ -6,6 +6,8 @@ import re
 
 def get_pkg_count():
     managers = [
+        ('qlist', 'qlist -I | wc -l'),           # Fast (portage-utils)
+        ('emerge', 'ls -d /var/db/pkg/*/* | wc -l'), # Fallback (VDB check)
         ('rpm', 'rpm -qa | wc -l'),
         ('pacman', 'pacman -Q | wc -l'),
         ('dpkg', 'dpkg-query -f ".\n" -W | wc -l'),
@@ -51,6 +53,7 @@ magenta = "\033[38;2;255;117;127m"
 yellow  = "\033[38;2;224;175;104m"
 orange  = "\033[38;2;255;158;100m"
 red     = "\033[38;2;247;118;142m"
+white  = "\033[37m"
 reset   = "\033[0m"
 
 if platform.system() != "Linux":
@@ -116,7 +119,14 @@ ubuntu_logo = f"""{orange}
     \\  \\   /  /
      ---(_)---
 {reset}"""
-
+gentoo_logo = r"""{purple}          _-----_
+         (       \
+         \   {white}o{purple}   \
+{blue}          \       )
+          /      _/
+         (      _-
+          \____-
+{reset}""".format(purple=purple, blue=blue, white=white, reset=reset)
 with open('/etc/os-release') as f:
     content = f.read()
 
@@ -131,6 +141,7 @@ for line in content.splitlines():
         distro_like = line.split('=')[1].strip('"').lower()
 
 logos = {
+    'gentoo': gentoo_logo,
     'arch': arch_logo,
     'fedora': fedora_logo,
     'debian': debian_logo,
@@ -163,8 +174,8 @@ offset = max_logo_width + 4
 print(logo)
 print(f"\033[{len(logo_lines)}A", end="")
 
-os_name = subprocess.check_output("grep '^NAME' /etc/os-release", shell=True).decode().strip().split('=')[1].strip('"')
-print(f"\033[{offset}G {blue}OS:{reset} {os_name}") 
+os_name = subprocess.check_output("grep '^NAME' /etc/os-release", shell=True).decode().strip().split('=')[1].replace('"', '')
+print(f"\033[{offset}G {blue}OS:{reset} {os_name}")
 
 # pkg_count = subprocess.check_output("pacman -Q | wc -l", shell=True).decode().strip()
 # print(f"\033[{offset}G {cyan}Packages:{reset} {pkg_count}")
