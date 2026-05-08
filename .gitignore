@@ -1,0 +1,18 @@
+.DS_Store
+.idea
+*.log
+tmp/
+
+# PyInstaller build artifacts
+build/
+dist/
+*.spec
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment-specific (CachyOS/Linux)
+.DS_Store
+*.swp
