@@ -34,13 +34,13 @@ cd ~/Fetcher
 
 ### 5.Build it
 ```
-pyinstaller fetcher.py
+pyinstaller --onefile main.py
 ```
 
 ### 6 . let the system make it a command
 
 ```
-ln -sf ~/Fetcher/dist/fetcher/fetcher ~/.local/bin/
+ln -sf ~/Fetcher/dist/main ~/.local/bin/
 ```
 ### 7. enjoy
 
