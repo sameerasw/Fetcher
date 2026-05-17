@@ -17,7 +17,7 @@
         git clone https://github.com/hamzadotjs/Fetcher.git
         cd ~/Fetcher
         #+END_SRC
-*** Install python and pipx
+*** 2. Install python and pipx
 **** for exmaple, On Arch Linux
 #+BEGIN_SRC bash
 sudo pacman -S python pipx
