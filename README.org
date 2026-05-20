@@ -41,7 +41,7 @@ echo export PATH="$HOME/.config/emacs/bin:$HOME/.local/bin:$PATH" | tee .bashrc 
 **** 6.2 Symlink fetcher to .local/bin
 
 #+BEGIN_SRC bash
-ln -sf ~/Fetcher/dist/main ~/.local/bin/
+ln -sf ~/Fetcher/dist/main ~/.local/bin/fetcher
 #+end_SRC
 
 *** 7. Enjoy!
