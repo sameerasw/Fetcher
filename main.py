@@ -71,7 +71,7 @@ reset   = "\033[0m"
 
 if platform.system() != "Linux":
     print("This fetcher only works on GNU/Linux, sorry")
-    exit()
+    sys.exit()
 
 tux = f"""{green}
     .--.
@@ -186,6 +186,17 @@ offset = max_logo_width + 4
 
 print(logo)
 print(f"\033[{len(logo_lines)}A", end="")
+
+# Clean the trailing newlines using .strip()
+username = subprocess.check_output("whoami", shell=True).decode().strip()
+hostname = subprocess.check_output("uname -n", shell=True).decode().strip()
+
+# Print the entire header sequentially without jumping back and forth
+print(f"\033[{offset}G{orange}{username}{white}@{green}{hostname}{reset}")
+
+
+print(f"\033[{offset}G====================")
+
 
 os_name = subprocess.check_output("grep '^NAME' /etc/os-release", shell=True).decode().strip().split('=')[1].replace('"', '')
 print(f"\033[{offset}G {blue}OS:{reset} {os_name}")
