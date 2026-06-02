@@ -19,8 +19,8 @@ def get_sys_age():
 
 def get_pkg_count():
     managers = [
-        ('qlist', 'qlist -I | wc -l'),           # Fast (portage-utils)
-        ('emerge', 'ls -d /var/db/pkg/*/* | wc -l'), # Fallback (VDB check)
+        ('qlist', 'qlist -I | wc -l'),
+        ('emerge', 'ls -d /var/db/pkg/*/* | wc -l'),
         ('rpm', 'rpm -qa | wc -l'),
         ('pacman', 'pacman -Q | wc -l'),
         ('dpkg', 'dpkg-query -f ".\n" -W | wc -l'),
@@ -30,14 +30,13 @@ def get_pkg_count():
         ('xbps-query', 'xbps-query -l | wc -l'),
         ('apk', 'apk info | wc -l')
     ]
-    
+
     for cmd, count_cmd in managers:
         if subprocess.run(['which', cmd], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0:
             try:
                 count = subprocess.check_output(count_cmd, shell=True, stderr=subprocess.DEVNULL).decode().strip()
                 if not count or count == "0":
                     continue
-                # Handle special cases for headers
                 if cmd == 'dnf':
                     return str(max(0, int(count) - 1))
                 if cmd == 'apt' and 'apt list' in count_cmd:
@@ -51,39 +50,40 @@ def get_pkg_count():
 def visible_width(s):
     return len(re.sub(r'\033\[[0-9;]*m', '', s))
 
-with open('/etc/os-release') as f:
-    content = f.read()
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--ascii', help='path to custom ascii file')
-args = parser.parse_args()
+def main():
+    with open('/etc/os-release') as f:
+        content = f.read()
 
-blue    = "\033[38;2;122;162;247m"
-purple  = "\033[38;2;187;154;247m"
-cyan    = "\033[38;2;125;207;255m"
-green   = "\033[38;2;158;206;106m"
-magenta = "\033[38;2;255;117;127m"
-yellow  = "\033[38;2;224;175;104m"
-orange  = "\033[38;2;255;158;100m"
-red     = "\033[38;2;247;118;142m"
-white  = "\033[37m"
-reset   = "\033[0m"
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--ascii', help='path to custom ascii file')
+    args = parser.parse_args()
 
-if platform.system() != "Linux":
-    print("This fetcher only works on GNU/Linux, sorry")
-    sys.exit()
+    blue    = "\033[38;2;122;162;247m"
+    purple  = "\033[38;2;187;154;247m"
+    cyan    = "\033[38;2;125;207;255m"
+    green   = "\033[38;2;158;206;106m"
+    magenta = "\033[38;2;255;117;127m"
+    yellow  = "\033[38;2;224;175;104m"
+    orange  = "\033[38;2;255;158;100m"
+    red     = "\033[38;2;247;118;142m"
+    white  = "\033[37m"
+    reset   = "\033[0m"
 
-tux = f"""{green}
+    if platform.system() != "Linux":
+        print("This fetcher only works on GNU/Linux, sorry")
+        import sys; sys.exit()
+
+    tux = f"""{green}
     .--.
    |o_o |
    |:_/ |
   //   \\ \\
  (|     | )
 /'\\_   _/`\\
-\\___)=(___/
-{reset}"""
+\___)=(___)/{reset}"""
 
-arch_logo = f"""{cyan}
+    arch_logo = f"""{cyan}
       /\\
      /  \\
     /\\   \\
@@ -92,7 +92,7 @@ arch_logo = f"""{cyan}
  /__ /  \\ __\\
 {reset}"""
 
-fedora_logo = f""" {blue}
+    fedora_logo = f""" {blue}
                                         
                                         
                       .cxO00Od:.        
@@ -107,7 +107,7 @@ fedora_logo = f""" {blue}
      :XMMMXOdddd; cMMMNddddl.           
     cWMMK;.       cMMMK                 
    .NMMX.         cMMMK                 
-   ;MMMK          cMMMO                 
+   ;MMMK          cMMMK                 
    .XMMW;        .kMMMc                 
     ,XMMWx;.   .:0MMMx.                 
      .xWMMMWXXNMMMMK:                   
@@ -116,7 +116,7 @@ fedora_logo = f""" {blue}
 {reset}
  """
 
-debian_logo = f"""{red}
+    debian_logo = f"""{red}
        _____
       /  __ \\
      |  /    |
@@ -124,7 +124,7 @@ debian_logo = f"""{red}
       \\_
 {reset}"""
 
-ubuntu_logo = f"""{orange}
+    ubuntu_logo = f"""{orange}
          _ 
      ---(_)---
     /  /   \\  \\
@@ -132,7 +132,8 @@ ubuntu_logo = f"""{orange}
     \\  \\   /  /
      ---(_)---
 {reset}"""
-gentoo_logo = r"""{purple}          _-----_
+
+    gentoo_logo = r"""{purple}          _-----_
          (       \
          \   {white}o{purple}   \
 {blue}          \       )
@@ -140,104 +141,97 @@ gentoo_logo = r"""{purple}          _-----_
          (      _-
           \____-
 {reset}""".format(purple=purple, blue=blue, white=white, reset=reset)
-with open('/etc/os-release') as f:
-    content = f.read()
 
-# We need to define these so the loop below doesn't crash
-distro_id = ""
-distro_like = ""
+    with open('/etc/os-release') as f:
+        content = f.read()
 
-for line in content.splitlines():
-    if line.startswith('ID='):
-        distro_id = line.split('=')[1].strip('"').lower()
-    if line.startswith('ID_LIKE='):
-        distro_like = line.split('=')[1].strip('"').lower()
+    distro_id = ""
+    distro_like = ""
 
-logos = {
-    'gentoo': gentoo_logo,
-    'arch': arch_logo,
-    'fedora': fedora_logo,
-    'debian': debian_logo,
-    'ubuntu': ubuntu_logo,
-    'linux': tux
-}
-logo = logos.get('linux')
-if args.ascii:
-    try:
-        with open(args.ascii) as f:
-            logo = f.read()
-    except Exception:
-        pass
-else:
-    # Try to match ID or ID_LIKE
-    matched = False
-    for key in logos:
-        if key in distro_id or key in distro_like:
-            logo = logos[key]
-            matched = True
-            break
-    if not matched:
-        logo = logos.get('linux')
+    for line in content.splitlines():
+        if line.startswith('ID='):
+            distro_id = line.split('=')[1].strip('"').lower()
+        if line.startswith('ID_LIKE='):
+            distro_like = line.split('=')[1].strip('"').lower()
 
-        ## logo printing logic
-logo_lines = logo.splitlines()
-max_logo_width = max(visible_width(line) for line in logo_lines) if logo_lines else 0
-offset = max_logo_width + 4
+    logos = {
+        'gentoo': gentoo_logo,
+        'arch': arch_logo,
+        'fedora': fedora_logo,
+        'debian': debian_logo,
+        'ubuntu': ubuntu_logo,
+        'linux': tux
+    }
+    logo = logos.get('linux')
+    if args.ascii:
+        try:
+            with open(args.ascii) as f:
+                logo = f.read()
+        except Exception:
+            pass
+    else:
+        matched = False
+        for key in logos:
+            if key in distro_id or key in distro_like:
+                logo = logos[key]
+                matched = True
+                break
+        if not matched:
+            logo = logos.get('linux')
 
-print(logo)
-print(f"\033[{len(logo_lines)}A", end="")
+    logo_lines = logo.splitlines()
+    max_logo_width = max(visible_width(line) for line in logo_lines) if logo_lines else 0
+    offset = max_logo_width + 4
 
-# Clean the trailing newlines using .strip()
-username = subprocess.check_output("whoami", shell=True).decode().strip()
-hostname = subprocess.check_output("uname -n", shell=True).decode().strip()
+    print(logo)
+    print(f"\033[{len(logo_lines)}A", end="")
 
-# Print the entire header sequentially without jumping back and forth
-print(f"\033[{offset}G{orange}{username}{white}@{green}{hostname}{reset}")
+    username = subprocess.check_output("whoami", shell=True).decode().strip()
+    hostname = subprocess.check_output("uname -n", shell=True).decode().strip()
+
+    print(f"\033[{offset}G{orange}{username}{white}@{green}{hostname}{reset}")
+    print(f"\033[{offset}G====================")
+
+    os_name = subprocess.check_output("grep '^NAME' /etc/os-release", shell=True).decode().strip().split('=')[1].replace('"', '')
+    print(f"\033[{offset}G {blue}OS:{reset} {os_name}")
+
+    pkg_count = get_pkg_count()
+    print(f"\033[{offset}G {cyan}Packages:{reset} {pkg_count}")
+
+    shell = os.path.basename(subprocess.check_output("echo $SHELL", shell=True).decode().strip())
+    print(f"\033[{offset}G {blue}Shell:{reset} {shell}")
+
+    term = os.environ.get('TERM', 'unknown')
+    print(f"\033[{offset}G {purple}Terminal:{reset} {term}")
+
+    wm = (
+        os.environ.get('XDG_CURRENT_DESKTOP') or
+        os.environ.get('DESKTOP_SESSION') or
+        os.environ.get('WAYLAND_DISPLAY') and 'wayland' or
+        os.environ.get('DISPLAY') and 'x11' or
+        'TTY'
+    )
+    print(f"\033[{offset}G {blue}WM:{reset} {wm}")
+
+    cpu = subprocess.check_output("lscpu | grep 'Model name'", shell=True).decode().strip().split('TM)')[1].strip()
+    print(f"\033[{offset}G {green}CPU:{reset} {cpu}")
+
+    def get_ram():
+        out = subprocess.check_output("free -h | awk 'NR==2 {print $2, $3}'", shell=True).decode().strip()
+        total, used, = out.split()
+        return total, used
+
+    total, used = get_ram()
+    print(f"\033[{offset}G {purple}RAM:{reset} {used} / {total}")
+
+    uptime = subprocess.check_output("uptime -p", shell=True).decode().strip()
+    print(f"\033[{offset}G {blue}Uptime:{reset} {uptime}")
+
+    age = get_sys_age()
+    print(f"\033[{offset}G {yellow}Age:{reset} {age}")
+
+    print(f"\033[{len(logo_lines)}B")
 
 
-print(f"\033[{offset}G====================")
-
-
-os_name = subprocess.check_output("grep '^NAME' /etc/os-release", shell=True).decode().strip().split('=')[1].replace('"', '')
-print(f"\033[{offset}G {blue}OS:{reset} {os_name}")
-
-# pkg_count = subprocess.check_output("pacman -Q | wc -l", shell=True).decode().strip()
-# print(f"\033[{offset}G {cyan}Packages:{reset} {pkg_count}")
-
-pkg_count = get_pkg_count()
-print(f"\033[{offset}G {cyan}Packages:{reset} {pkg_count}")
-
-
-shell = os.path.basename(subprocess.check_output("echo $SHELL", shell=True).decode().strip())
-print(f"\033[{offset}G {blue}Shell:{reset} {shell}")
-
-term = os.environ.get('TERM', 'unknown')
-print(f"\033[{offset}G {purple}Terminal:{reset} {term}")
-
-wm = (
-    os.environ.get('XDG_CURRENT_DESKTOP') or
-    os.environ.get('DESKTOP_SESSION') or
-    os.environ.get('WAYLAND_DISPLAY') and 'wayland' or
-    os.environ.get('DISPLAY') and 'x11' or
-    'TTY'
-)
-print(f"\033[{offset}G {blue}WM:{reset} {wm}")
-
-cpu = subprocess.check_output("lscpu | grep 'Model name'", shell=True).decode().strip().split('TM)')[1].strip()
-print(f"\033[{offset}G {green}CPU:{reset} {cpu}")
-
-def get_ram():
-    out = subprocess.check_output("free -h | awk 'NR==2 {print $2, $3}'", shell=True).decode().strip()
-    total, used, = out.split()
-    return total, used
-
-total, used = get_ram()
-print(f"\033[{offset}G {purple}RAM:{reset} {used} / {total}")
-
-uptime = subprocess.check_output("uptime -p", shell=True).decode().strip()
-print(f"\033[{offset}G {blue}Uptime:{reset} {uptime}")
-
-age = get_sys_age()
-print(f"\033[{offset}G {yellow}Age:{reset} {age}")
-
-print(f"\033[{len(logo_lines)}B")
+if __name__ == "__main__":
+    main()
