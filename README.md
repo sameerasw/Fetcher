@@ -21,6 +21,21 @@ A simple `neofetch` alternative, written in Python.
 ## How to Use
 
 ### 0. Install deps
+
+Install Python and pipx (Arch; other distros may vary):
+```bash
+sudo pacman -S python pipx
+```
+
+### 1. Clone the repository & enter its directory
+```bash
+git clone https://github.com/hamzadotjs/Fetcher.git
+cd Fetcher
+```
+
+### 2. Install with pipx
+```bash
+pipx install -e .
 #### Our deps are 
 1. Python
 2. pipx
@@ -63,6 +78,13 @@ pip install -e .
 
 ### 3. Enjoy!
 Simply run `fetcher` in your terminal.
+
+---
+
+## Alternative: Standalone Binary
+
+If you prefer a single executable instead:
+
 
 ---
 
