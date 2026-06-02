@@ -6,9 +6,9 @@
 1. Customizability: you can add or remove whatever you want and recompile.
 2. Portability: Its less that 20 MegaBytes.
 3. Custom ascii art support.
-[[file:./preview1.png]]
+[[file:./preview.png]]
 * With ascii:
-[[file:./preview-ascii.png]]
+[[file:./ascii-preview.png]]
 ** How to use
 
 *simple*
