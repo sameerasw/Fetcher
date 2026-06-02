@@ -1,0 +1,8 @@
+README.md
+main.py
+pyproject.toml
+fetcher.egg-info/PKG-INFO
+fetcher.egg-info/SOURCES.txt
+fetcher.egg-info/dependency_links.txt
+fetcher.egg-info/entry_points.txt
+fetcher.egg-info/top_level.txt
