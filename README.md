@@ -70,12 +70,3 @@ ln -sf ~/Fetcher/dist/main ~/.local/bin/fetcher
 Simply run `fetcher` in your terminal.
 
 ```
-
-### Key adjustments made:
-* Changed `#+title:` to a standard `#` H1 header.
-* Fixed the step numbering sequence (4 $\rightarrow$ 5 $\rightarrow$ 6 $\rightarrow$ 7).
-* Replaced `#+BEGIN_SRC bash` blocks with clean Markdown triple-backtick (`` ```bash ``) code blocks.
-* Converted Org-mode links `[[file:./preview.png]]` to Markdown image syntax `![Alt Text](url)`.
-* Changed the `tee .bashrc` command to a safer `>> ~/.bashrc` append, preventing accidental overwrites of existing configurations.
-
-```
