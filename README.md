@@ -54,7 +54,7 @@ pyinstaller --onefile main.py
 First, ensure your `~/.local/bin` is included in your system's PATH:
 
 ```bash
-echo 'export PATH="$HOME/.config/emacs/bin:$HOME/.local/bin:$PATH"' >> ~/.bashrc # or ~/.zshrc if you use Zsh
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc # or ~/.zshrc if you use Zsh
 
 ```
 
