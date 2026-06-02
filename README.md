@@ -69,4 +69,3 @@ ln -sf ~/Fetcher/dist/main ~/.local/bin/fetcher
 
 Simply run `fetcher` in your terminal.
 
-```
